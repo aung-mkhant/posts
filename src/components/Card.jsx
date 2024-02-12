@@ -1,17 +1,25 @@
 import '../App.css';
+import { Link } from 'react-router-dom';
 
 const Card = (props) => {
-    const {image, position, topic, headline} = props;
+    const { id, image, topic, title, content } = props;
+
     return (
-        <div className={`card new ${position} w-75 h-auto`}>
-            <img src={`${image}`} alt="" className="card-img-top"/>
+        <div className={`card border-0 h-auto`}>
+            <img src={`${image}`} alt="" className="card-img-top img-fluid "/>
             <div className="card-body">
-            <p className="card-subtitle text-body-secondary" style={{fontSize: 1.2 + 'vw'}}>{topic}</p>
-            <p className="card-title" style={{fontSize: 1.4 + 'vw'}} >{headline}</p>
+                <div className="card-subtitle text-body-secondary" style={{ fontSize: 14 }}>{topic}</div>
+                <Link to={`/posts/${id}`} state= {{
+                    image: image,
+                    topic: topic,
+                    title: title,
+                    content: content
+                }}>
+                    <div className="card-title" style={{ fontSize: '1.25rem' }}>{title}</div>
+                </Link>
             </div>
         </div>
     );
 }
-
 
 export default Card;

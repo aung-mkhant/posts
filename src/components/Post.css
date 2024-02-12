@@ -1,0 +1,32 @@
+
+
+
+.article {
+    padding: 78px 0;
+}
+.topic {
+    font-family: 'Roboto Condensed', sans-serif;
+    color: #D24545
+}
+.title {
+    font-family: 'Zilla Slab','Noto Sans Myanmar', serif;
+}
+
+.main-content {
+    display: grid;
+    grid-template-columns: 70% 30%;
+}
+.content {
+    font-family: 'PT Serif', serif;
+    font-size: 1.1rem;
+    line-height: 1.8;
+}
+
+
+
+
+@media (max-width: 1024px) {
+    .main-content {
+        grid-template-columns: 1fr;
+    }
+}

@@ -1,36 +1,44 @@
 import './App.css';
 import Cards from "./components/Cards";
-import Tags from "./components/Tags";
-import {useState,useEffect} from "react";
+import {useState,useEffect,useRef} from "react";
 import axios from "axios";
-import Socials from "./components/Socials";
+import {Route, Routes, useNavigate} from "react-router-dom";
+import Post from "./components/Post";
 
 function App() {
 
 
-
     const [cards,setCards] = useState([]);
-    const [filter, setFilter] = useState('All');
+    const navigate = useNavigate();
 
 
+    const navButton = useRef(null);
+    const linksContainerRef= useRef(null);
 
-    const fetchData = () =>  {
-        const uri = `/posts/${filter}/`;
-        return axios.get(uri)
-            .then(result =>  setCards(result.data ))
-            .catch(err => console.log(err))
+    let collapseNav = () => {
+        navButton.current.classList.add('collapsed');
+        linksContainerRef.current.classList.remove('show');
     }
 
-    const changeFilter = (filterValue) => {
-        setFilter(filterValue);
+
+
+    const fetchData = (filterValue='All') =>  {
+        const uri = `https://amkblog.onrender.com/posts/${filterValue}/`;
+        axios.get(uri)
+            .then(result =>  setCards(result.data))
+            .catch(err => console.log('Error while fetching data',err))
     }
 
+    const handleClick = (newFilter) => {
+        collapseNav();
+        fetchData(newFilter);
+        navigate('/posts');
+    }
 
 
     useEffect(() => {
-        console.log("this is run")
         fetchData();
-    },[filter])
+    },[])
 
 
 
@@ -40,19 +48,20 @@ function App() {
 
           <nav className="navbar navbar-expand-lg bg-white">
               <div className="container-fluid">
-                  <a className="navbar-brand fs-1" href="#">Navbar</a>
+                  <a className="navbar-brand fs-2" href="/posts">HATESEARTHLINGS</a>
 
-                  <button className="navbar-toggler" type="button" data-bs-toggle="collapse"
+                  <button className="navbar-toggler" type="button" data-bs-toggle="collapse" ref={navButton}
                           data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false"
                           aria-label="Toggle navigation">
                       <span className="navbar-toggler-icon"></span>
                   </button>
-                  <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
+                  <div className="collapse navbar-collapse" id="navbarNavAltMarkup" ref={linksContainerRef}>
                       <div className="navbar-nav ms-auto">
-                          <a className="nav-link active fs-5" aria-current="page" href="#">Home</a>
-                          <a className="nav-link fs-5" href="#">Blog</a>
-                          <a className="nav-link fs-5" href="#">About</a>
-                          <a className="nav-link fs-5" href="#">Contact</a>
+                          <button className="nav-link fs-5 tags"  onClick={() => {handleClick('All')}} >All</button>
+                          <button className="nav-link fs-5 tags"  onClick={() => handleClick('Health')}>Health</button>
+                          <button className="nav-link fs-5 tags"  onClick={() => handleClick('Fashion')}  >Fashion</button>
+                          <button className="nav-link fs-5 tags"  onClick={() => handleClick('Lifestyle')}  >Lifestyle</button>
+                          <button className="nav-link fs-5 tags"  onClick={() => handleClick('Technology')} >Technology</button>
                       </div>
                   </div>
               </div>
@@ -61,24 +70,33 @@ function App() {
 
 
 
-      <section id="middle" className="py-5">
-          <Cards cards={cards} getData={fetchData}  />
+      <section id="middle" className="">
 
-          <div className="right">
-              <Tags handleClick={changeFilter}/>
-              <Socials />
-          </div>
+          <Routes>
+
+              <Route path='/posts'>
+
+                  <Route index element={<Cards cards={cards} />}/>
+
+                  <Route path=':id' element={<Post />}/>
+              </Route>
 
 
+          </Routes>
       </section>
 
 
 
-          <section id="bottom">
 
-                  <div className="end-text">Dear traveller, you have reached the end. Come again next time for new content.</div>
+          <section id="bottom" className="py-5">
 
+              <div className="container text-center">
+              <div className="fs-4 bottom-text">Have ideas? Come join us!</div>
+              <div className="fs-1 brand">HATESEARTHLINGS&trade;</div>
+              </div>
           </section>
+
+
 
       </>
   );
